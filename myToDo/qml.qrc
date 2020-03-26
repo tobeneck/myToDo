@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>AddToDo.qml</file>
+        <file>ToDoListView.qml</file>
+        <file>CategoryView.qml</file>
+        <file>CalendarView.qml</file>
+        <file>EditToDoView.qml</file>
+        <file>TimePicker.qml</file>
+        <file>EditTime.qml</file>
+    </qresource>
+</RCC>
