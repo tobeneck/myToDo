@@ -6,8 +6,8 @@ import Backend 1.0
 ApplicationWindow {
     id: window
     visible: true
-    width: 640
-    height: 480
+    width: 480
+    height: 640
     title: qsTr("Stack")
 
     //definitions -------------------------------------------------------------------------------------------------------------
@@ -42,6 +42,13 @@ ApplicationWindow {
     }
 
     Component{
+        id: pickToDoListView
+        PickToDoListView{
+            todoListsModel: todoLists
+        }
+    }
+
+    Component{
         id: emptyInitial
         Page{
             title: "If you read this, than its a bugg"
@@ -58,6 +65,9 @@ ApplicationWindow {
         ListElement { text: "Apple"; color: "Green" }
         ListElement { text: "Coconut"; color: "Brown" }
     }
+    ListModel{
+        id: todoLists
+    }
 
 
     //the interaction stuff ----------------------------------------------------------------------------------------------------
@@ -67,13 +77,14 @@ ApplicationWindow {
 
         ToolButton {
             id: toolButton
-            text: stackView.depth > 2 ? "\u25C0" : "\u2630"
+            text: stackView.depth > 1 ? "\u25C0" : "\u2630"
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             onClicked: {
-                if (stackView.depth > 2) {
+                if (stackView.depth > 1) {
                     stackView.pop()
                 } else {
-                    drawer.open()
+                    //drawer.open()
+                    print("TODO: implement")
                 }
             }
         }
@@ -87,7 +98,7 @@ ApplicationWindow {
             id: todoViewButton
             anchors.right: categoryViewButton.left
             text: "ToDo"
-            visible: stackView.depth <= 2
+            visible: stackView.depth > 1
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             onClicked: {
                 stackView.pop(null)
@@ -100,7 +111,7 @@ ApplicationWindow {
             id: categoryViewButton
             anchors.right: calendarViewButton.left
             text: "Cat"
-            visible: stackView.depth <= 2
+            visible: stackView.depth > 1
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             onClicked: {
                 stackView.pop(null)
@@ -113,7 +124,7 @@ ApplicationWindow {
             id: calendarViewButton
             anchors.right: parent.right
             text: "Cal"
-            visible: stackView.depth <= 2
+            visible: stackView.depth > 1
             font.pixelSize: Qt.application.font.pixelSize * 1.6
             onClicked: {
                 stackView.pop()
@@ -123,32 +134,11 @@ ApplicationWindow {
         }
     }
 
-    Drawer {
-        id: drawer
-        width: window.width * 0.66
-        height: window.height
-
-        Column {
-            anchors.fill: parent
-
-            ItemDelegate {
-                text: qsTr("ToDoList 1")
-                width: parent.width
-                onClicked: {
-                    stackView.pop(null)
-                    stackView.push(toDoListView)
-                    drawer.close()
-                }
-            }
-            //TODO: make a ListView for all ToDoLists
-        }
-    }
-
     StackView {
         id: stackView
-        initialItem: emptyInitial
+        initialItem: pickToDoListView
         anchors.fill: parent
     }
 
-    Component.onCompleted: stackView.push(toDoListView)
+    //Component.onCompleted: stackView.push(toDoListView)
 }

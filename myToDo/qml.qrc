@@ -9,5 +9,7 @@
         <file>EditToDoView.qml</file>
         <file>TimePicker.qml</file>
         <file>EditTime.qml</file>
+        <file>PickToDoListView.qml</file>
+        <file>DragableDelegate.qml</file>
     </qresource>
 </RCC>

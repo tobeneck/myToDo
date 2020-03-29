@@ -33,7 +33,17 @@ Page {
             height: parent.height/10
 
             onAccepted: {
-                todos.append({"List": "", "title": title, "category": "", "date": "", "time": "", "duration": "", "reminder":"", "label": "", "comment":""})
+                todoListModel.append({"title": title,
+                                 "path": "ToDo", //TODO
+                                 "done":false,
+                                 "label":null,
+                                 "status": null,
+                                 "priority": null,
+                                 "due date": null,
+                                 "repeat": null,
+                                 "reminder":null,
+                                 "duration": null,
+                                 "notes":""})
             }
         }
 

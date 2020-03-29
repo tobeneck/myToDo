@@ -22,6 +22,7 @@ Page {
                 anchors.fill: parent
                 onClicked: pickDatePopup.open()
             }
+            //TODO: setDueDate
         }
 
         //startingTime
@@ -97,7 +98,9 @@ Page {
         }
 
         //TODO: sub EditToDos
-        //TODO: Notes
+
+
+        //Notes
         Rectangle{
             border.width: 3
             border.color: "grey"
