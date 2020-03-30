@@ -1,6 +1,7 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
 import Backend 1.0
+import QtQuick.Layouts 1.14 //for RowLayout
 
 
 ApplicationWindow {
@@ -15,6 +16,7 @@ ApplicationWindow {
         id: backend
     }
 
+    property var currentView: "todoListView"
 
 
     Component{
@@ -94,50 +96,71 @@ ApplicationWindow {
             anchors.centerIn: parent
         }
 
-        ToolButton {
-            id: todoViewButton
-            anchors.right: categoryViewButton.left
-            text: "ToDo"
-            visible: stackView.depth > 1
-            font.pixelSize: Qt.application.font.pixelSize * 1.6
-            onClicked: {
-                stackView.pop(null)
-                stackView.push(toDoListView)
-                print(stackView.depth)
-            }
-        }
 
-        ToolButton {
-            id: categoryViewButton
-            anchors.right: calendarViewButton.left
-            text: "Cat"
-            visible: stackView.depth > 1
-            font.pixelSize: Qt.application.font.pixelSize * 1.6
-            onClicked: {
-                stackView.pop(null)
-                stackView.push(categoryView)
-                print(stackView.depth)
-            }
-        }
 
-        ToolButton {
-            id: calendarViewButton
-            anchors.right: parent.right
-            text: "Cal"
-            visible: stackView.depth > 1
-            font.pixelSize: Qt.application.font.pixelSize * 1.6
-            onClicked: {
-                stackView.pop()
-                stackView.push(calendarView)
-                print(stackView.depth)
-            }
-        }
+
     }
 
     StackView {
         id: stackView
         initialItem: pickToDoListView
         anchors.fill: parent
+    }
+
+    footer: ToolBar {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        RowLayout{
+            anchors.fill: parent
+            RadioButton {
+                id: todoViewButton
+                checked: true //TODO: change
+                text: "ToDo"
+                //visible: stackView.depth > 1
+                font.pixelSize: Qt.application.font.pixelSize * 1.6
+                //property bool isCurrent: true
+                onClicked: {
+                    currentView = "toDoListView"
+                    if(stackView.depth > 1){
+                        stackView.pop()
+                        stackView.push(categoryView)
+                    }
+                }
+            }
+
+            RadioButton {
+                id: categoryViewButton
+                text: "Cat"
+                //visible: stackView.depth > 1
+                font.pixelSize: Qt.application.font.pixelSize * 1.6
+                //property bool isCurrent: false
+                onClicked: {
+                    currentView = "categoryView"
+                    if(stackView.depth > 1){
+                        stackView.pop()
+                        stackView.push(categoryView)
+                    }
+                }
+                property var isCurrent: true
+            }
+
+            RadioButton {
+                id: calendarViewButton
+                text: "Cal"
+                //visible: stackView.depth > 1
+                font.pixelSize: Qt.application.font.pixelSize * 1.6
+
+                //property bool isCurrent: false
+                onClicked: {
+                    currentView = "calendarView"
+                    if(stackView.depth > 1){
+                        stackView.pop()
+                        stackView.push(calendarView)
+                    }
+                }
+            }
+        }
+
     }
 
     //Component.onCompleted: stackView.push(toDoListView)

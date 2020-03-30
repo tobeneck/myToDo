@@ -8,6 +8,14 @@ Page {
 
     property var todoListsModel
 
+    function addToList(name, type){
+            todoListsModel.append({"name": name,
+                                  "type": type,
+                                  "attributes": []})
+        //TODO: if name exists, make it _2
+        return;
+    }
+
     Component {
         id: dragDelegate
 
@@ -24,6 +32,20 @@ Page {
 
             onPressAndHold: held = true
             onReleased: held = false
+
+            onClicked: { //open the new screen
+                if(type == "list"){
+                    if(currentView == "todoListView")
+                        stackView.push(toDoListView)
+                    if(currentView == "categoryView")
+                        stackView.push(categoryView)
+                    if(currentView == "calendarView")
+                        stackView.push(calendarView)
+                }
+                else if(type == "group"){
+                    print("TODO: implement")
+                }
+            }
 
             Rectangle {
                 id: content
@@ -60,7 +82,7 @@ Page {
                 Column {
                     id: column
                     anchors { fill: parent; margins: 2 }
-
+                    Text { text: type }
                     Text { text: name }
                 }
 //![2]
@@ -125,7 +147,7 @@ Page {
 
     Button{
         id: newToDoListButton
-        text: qsTr("+ create List")
+        text: qsTr("+ add new")
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
@@ -146,12 +168,45 @@ Page {
 
         Item{
             anchors.fill: parent
+            RadioButton{
+                id: toggleList
+                text: qsTr("new List")
+                anchors.top: parent.top
+                anchors.left: parent.left
+                checked: true
+                onCheckedChanged: {
+                    if(checked && newListName.text == "NewGroup")
+                        newListName.text = "NewList"
+                }
+            }
+
+            RadioButton{
+                id: toggleGroup
+                text: qsTr("new Group")
+                anchors.top: parent.top
+                anchors.right: parent.right
+                checked: false
+                onCheckedChanged: {
+                    if(checked && newListName.text == "NewList")
+                        newListName.text = "NewGroup"
+                }
+            }
+
             TextField {
                 id: newListName
                 text: qsTr("NewList")
-                anchors.top: parent.top
+                anchors.top: toggleList.bottom
                 anchors.left: parent.left
                 anchors.right: parent.right
+                onAccepted: {
+                    var type = ""
+                    if(toggleList.checked)
+                        type = "list"
+                    else if(toggleGroup.checked)
+                        type = "group"
+                    addToList(newListName.text, type)
+                    newToDoListPopup.close()
+                }
             }
             Button{
                 text: qsTr("Accept")
@@ -159,8 +214,12 @@ Page {
                 anchors.bottom: parent.bottom
                 onClicked: {
                     //TODO: add new List
-                    todoListsModel.append({"name": newListName.text,
-                                              "attributes": []})
+                    var type = ""
+                    if(toggleList.checked)
+                        type = "list"
+                    else if(toggleGroup.checked)
+                        type = "group"
+                    addToList(newListName.text, type)
                     newToDoListPopup.close()
                 }
             }
