@@ -16,6 +16,8 @@ Page {
         return;
     }
 
+    signal openList(int index)
+
     Component {
         id: dragDelegate
 
@@ -33,19 +35,7 @@ Page {
             onPressAndHold: held = true
             onReleased: held = false
 
-            onClicked: { //open the new screen
-                if(type == "list"){
-                    if(currentView == "todoListView")
-                        stackView.push(toDoListView)
-                    if(currentView == "categoryView")
-                        stackView.push(categoryView)
-                    if(currentView == "calendarView")
-                        stackView.push(calendarView)
-                }
-                else if(type == "group"){
-                    print("TODO: implement")
-                }
-            }
+            onClicked: openList(index)
 
             Rectangle {
                 id: content

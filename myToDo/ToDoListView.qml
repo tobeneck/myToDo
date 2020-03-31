@@ -5,12 +5,13 @@ import Backend 1.0
 import ToDo 1.0
 
 Page {
-    title: qsTr("ToDo List")
+    title: qsTr("ToDo List "+ currentTag)
     id: root
 
     property var todoListModel
     property var categoryListModel
     property var currentIndex
+    property var currentTag: ""
 
     Component{
         id: editToDoView

@@ -17,13 +17,16 @@ ApplicationWindow {
     }
 
     property var currentView: "todoListView"
+    property var currentListIndex
 
 
     Component{
         id: toDoListView
         ToDoListView{
-            todoListModel: todos
+            todoListModel: todoLists.get(currentListIndex).attributes
+            title: todoLists.get(currentListIndex).name
             categoryListModel: categorys
+            currentIndex: currentListIndex
         }
     }
 
@@ -47,6 +50,24 @@ ApplicationWindow {
         id: pickToDoListView
         PickToDoListView{
             todoListsModel: todoLists
+
+            onOpenList: { //open the new screen
+                var name = todoListsModel.get(index).name
+                var type = todoListsModel.get(index).type
+
+                if(type === "list"){
+                    currentListIndex = index
+                    if(currentView == "todoListView")
+                        stackView.push(toDoListView)
+                    if(currentView == "categoryView")
+                        stackView.push(categoryView)
+                    if(currentView == "calendarView")
+                        stackView.push(calendarView)
+                }
+                else if(type === "group"){
+                    print("TODO: implement")
+                }
+            }
         }
     }
 
@@ -63,9 +84,29 @@ ApplicationWindow {
     }
     ListModel {
         id: categorys
-        ListElement { text: "Banana"; color: "Yellow" }
-        ListElement { text: "Apple"; color: "Green" }
-        ListElement { text: "Coconut"; color: "Brown" }
+        ListElement {
+            text: "Apple"
+            cost: 2.45
+            attributes: [
+                ListElement { description: "Core" },
+                ListElement { description: "Deciduous" }
+            ]
+        }
+        ListElement {
+            text: "Orange"
+            cost: 3.25
+            attributes: [
+                ListElement { description: "Citrus" }
+            ]
+        }
+        ListElement {
+            text: "Banana"
+            cost: 1.95
+            attributes: [
+                ListElement { description: "Tropical" },
+                ListElement { description: "Seedless" }
+            ]
+        }
     }
     ListModel{
         id: todoLists
@@ -123,7 +164,7 @@ ApplicationWindow {
                     currentView = "toDoListView"
                     if(stackView.depth > 1){
                         stackView.pop()
-                        stackView.push(categoryView)
+                        stackView.push(toDoListView)
                     }
                 }
             }
@@ -163,5 +204,11 @@ ApplicationWindow {
 
     }
 
-    //Component.onCompleted: stackView.push(toDoListView)
+//    Component.onCompleted: {
+//        for(var i = 0; i < categorys.rowCount(); i++){ //<-- this is how to iterate over toDos
+//            print(categorys.get(i).text)
+//            for(var j = 0; j < categorys.get(i).attributes.count; j++)
+//                print(categorys.get(i).attributes.get(j).description)
+//        }
+//    }
 }
