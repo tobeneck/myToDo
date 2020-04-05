@@ -22,14 +22,6 @@ Page {
         }
     }
 
-    header: ToolBar { //TODO: implement
-        contentHeight: testText.implicitHeight
-        Text{
-            id:testText
-            text: "ToDoListViewHeadder"
-        }
-    }
-
     Item {
         anchors.fill: parent
 
@@ -134,6 +126,13 @@ Page {
 
             model: todoListModel
         }
+    }
+    header: ViewHeadder{
+
+    }
+
+    footer: SwitchViewFooter{
+
     }
 
 }

@@ -117,95 +117,11 @@ ApplicationWindow {
     }
 
 
-    //the interaction stuff ----------------------------------------------------------------------------------------------------
-
-    header: ToolBar {
-        contentHeight: toolButton.implicitHeight
-
-        ToolButton {
-            id: toolButton
-            text: stackView.depth > 1 ? "\u25C0" : "\u2630"
-            font.pixelSize: Qt.application.font.pixelSize * 1.6
-            onClicked: {
-                if (stackView.depth > 1) {
-                    stackView.pop()
-                } else {
-                    //drawer.open()
-                    print("TODO: implement")
-                }
-            }
-        }
-
-        Label {
-            text: stackView.currentItem.title
-            anchors.centerIn: parent
-        }
-
-
-
-
-    }
-
+//the interaction stuff ----------------------------------------------------------------------------------------------------
     StackView {
         id: stackView
         initialItem: pickToDoListView
         anchors.fill: parent
-    }
-
-    footer: ToolBar {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        RowLayout{
-            anchors.fill: parent
-            RadioButton {
-                id: todoViewButton
-                checked: true //TODO: change
-                text: "ToDo"
-                //visible: stackView.depth > 1
-                font.pixelSize: Qt.application.font.pixelSize * 1.6
-                //property bool isCurrent: true
-                onClicked: {
-                    currentView = "toDoListView"
-                    if(stackView.depth > 1){
-                        stackView.pop()
-                        stackView.push(toDoListView)
-                    }
-                }
-            }
-
-            RadioButton {
-                id: categoryViewButton
-                text: "Cat"
-                //visible: stackView.depth > 1
-                font.pixelSize: Qt.application.font.pixelSize * 1.6
-                //property bool isCurrent: false
-                onClicked: {
-                    currentView = "categoryView"
-                    if(stackView.depth > 1){
-                        stackView.pop()
-                        stackView.push(categoryView)
-                    }
-                }
-                property var isCurrent: true
-            }
-
-            RadioButton {
-                id: calendarViewButton
-                text: "Cal"
-                //visible: stackView.depth > 1
-                font.pixelSize: Qt.application.font.pixelSize * 1.6
-
-                //property bool isCurrent: false
-                onClicked: {
-                    currentView = "calendarView"
-                    if(stackView.depth > 1){
-                        stackView.pop()
-                        stackView.push(calendarView)
-                    }
-                }
-            }
-        }
-
     }
 
 //    Component.onCompleted: {

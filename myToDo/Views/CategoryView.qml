@@ -12,4 +12,12 @@ Page {
     Text{
         text: "Category View Screen"
     }
+
+    header: ViewHeadder{
+
+    }
+
+    footer: SwitchViewFooter{
+
+    }
 }

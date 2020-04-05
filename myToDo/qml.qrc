@@ -13,5 +13,6 @@
         <file>MyComponents/PickDueDatePopup.qml</file>
         <file>MyComponents/PickDateAndTimePopup.qml</file>
         <file>MyComponents/AddToDo.qml</file>
+        <file>MyComponents/ViewHeadder.qml</file>
     </qresource>
 </RCC>

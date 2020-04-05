@@ -12,4 +12,12 @@ Page {
     Text{
         text: "CalendarViewScreen"
     }
+
+    header: ViewHeadder{
+
+    }
+
+    footer: SwitchViewFooter{
+
+    }
 }

@@ -225,4 +225,12 @@ Page {
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
     }
 
+    header: ToolBar{
+        //TODO: implement
+    }
+
+    footer: SwitchViewFooter{
+
+    }
+
 }
