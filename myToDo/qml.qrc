@@ -1,15 +1,17 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
-        <file>qtquickcontrols2.conf</file>
-        <file>AddToDo.qml</file>
-        <file>ToDoListView.qml</file>
-        <file>CategoryView.qml</file>
-        <file>CalendarView.qml</file>
-        <file>EditToDoView.qml</file>
-        <file>TimePicker.qml</file>
-        <file>EditTime.qml</file>
-        <file>PickToDoListView.qml</file>
-        <file>DragableDelegate.qml</file>
+        <file>Main/main.qml</file>
+        <file>Views/ToDoListView.qml</file>
+        <file>Views/PickToDoListView.qml</file>
+        <file>Views/EditToDoView.qml</file>
+        <file>Views/CategoryView.qml</file>
+        <file>Views/CalendarView.qml</file>
+        <file>MyComponents/ToDo.qml</file>
+        <file>MyComponents/TimeTextInput.qml</file>
+        <file>MyComponents/TimePicker.qml</file>
+        <file>MyComponents/SwitchViewFooter.qml</file>
+        <file>MyComponents/PickDueDatePopup.qml</file>
+        <file>MyComponents/PickDateAndTimePopup.qml</file>
+        <file>MyComponents/AddToDo.qml</file>
     </qresource>
 </RCC>
