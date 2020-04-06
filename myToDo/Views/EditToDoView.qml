@@ -45,6 +45,27 @@ Page {
 //            repeatText.color = currentToDo.repeatID === -1 ? "grey" : "black"
     }
 
+    Component{
+        id: pickDateAndTimeView
+        PickDateAndTimeView{
+            startDate: currentToDo.startDate
+            endDate: currentToDo.endDate
+            type: currentToDo.type
+            allDay: currentToDo.allDay
+            onUpdateValues: {
+                currentToDo.startDate = startDate //TODO: just save everythink in a date
+                currentToDo.endDate = endDate
+                currentToDo.allDay = allDay
+                currentToDo.type = type
+                currentToDo.startDateEnabled = true
+                //TODO: set the changedTate and changedTime here
+                currentToDo.changedNumber = currentToDo.changedNumber + 1
+                updateUI()
+            }
+
+        }
+    }
+
 
     ListModel{
         id: repeatListModel
@@ -69,7 +90,7 @@ Page {
                 Layout.fillWidth: true
                 MouseArea{
                     anchors.fill: parent
-                    onClicked: pickStartTimePopup.open()
+                    onClicked: stackView.push(pickDateAndTimeView)
                 }
             }
             Button{
@@ -87,7 +108,7 @@ Page {
                 Layout.fillWidth: true
                 MouseArea{
                     anchors.fill: parent
-                    onClicked: pickEndTimePopup.open()
+                    onClicked: stackView.push(pickDateAndTimeView)
                 }
             }
             Button{
@@ -104,7 +125,7 @@ Page {
                 Layout.fillWidth: true
                 MouseArea{
                     anchors.fill: parent
-                    onClicked: pickStartTimePopup.open()
+                    //onClicked:
                 }
             }
             Button{
@@ -116,7 +137,7 @@ Page {
                 Layout.fillWidth: true
                 MouseArea{
                     anchors.fill: parent
-                    //onClicked: pickTimePopup.open()
+                    //onClicked:
                 }
             }
             Button{
@@ -188,26 +209,6 @@ Page {
 
         //TODO: comments
 
-    }
-
-
-    PickDueDatePopup{
-        id: pickStartTimePopup
-        onUpdateValues: {
-            currentToDo.startDateEnabled = true
-            currentToDo.startDate = date
-            updateUI()
-        }
-    }
-
-    PickDateAndTimePopup{
-        id: pickEndTimePopup
-        onUpdateValues: {
-            currentToDo.endDateEnabled = true
-            currentToDo.endDate = date
-            currentToDo.endTime = hours * 60 + minutes
-            updateUI()
-        }
     }
 
     header: ViewHeadder{

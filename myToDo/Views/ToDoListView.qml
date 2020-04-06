@@ -36,19 +36,37 @@ Page {
 
             onAccepted: {
                 //TODO: standardise somewhere
-                todoListModel.append({"createdOn": new Date(),
+                var startDate = new Date()
+                startDate = new Date(startDate.setHours(9))
+                startDate = new Date(startDate.setMinutes(0))
+                startDate = new Date(startDate.setSeconds(0))
+                startDate = new Date(startDate.setMilliseconds(0))
+
+                var endDate = new Date()
+                endDate = new Date(endDate.setHours(10))
+                endDate = new Date(endDate.setMinutes(0))
+                endDate = new Date(endDate.setSeconds(0))
+                endDate = new Date(endDate.setMilliseconds(0))
+
+                todoListModel.append({
+                                 "creationDate": new Date(),
+                                 "creationTime": "TODO",
+                                 "changedDate": new Date(),
+                                 "changedTime": "TODO",
+                                 "changedNumber": 0,
+                                 //instead of going by time maybe make some kind of revision number or something (indipendent of tine zones)? or save both!
+
                                  "title": title,
                                  "done": false,
                                  "labels": [],
                                  "status": "ToDo", //make it an ID
                                  "priority": 3, //1-5
 
-                                 "startDate": new Date(),
                                  "startDateEnabled": false, //show the date
-                                 "startTime": 0, //0 for disabled, mins from 00:00 otherwise
-                                 "endDate": new Date(),
-                                 "endDateEnabled": false, //show the date
-                                 "endTime": 0, //0 for disabled, mins from 00:00 otherwise
+                                 "allDay": false,
+                                 "type": "ToDo", //show the date
+                                 "startDate": startDate,
+                                 "endDate": endDate,
 
                                  "repeatID": 0, //0 do not repeat, 1: days, 2: weeks, 3: months, 4: years
                                  "repeatTime": 0, //every x ID

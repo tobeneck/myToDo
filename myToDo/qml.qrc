@@ -8,11 +8,9 @@
         <file>Views/CalendarView.qml</file>
         <file>MyComponents/ToDo.qml</file>
         <file>MyComponents/TimeTextInput.qml</file>
-        <file>MyComponents/TimePicker.qml</file>
         <file>MyComponents/SwitchViewFooter.qml</file>
-        <file>MyComponents/PickDueDatePopup.qml</file>
-        <file>MyComponents/PickDateAndTimePopup.qml</file>
         <file>MyComponents/AddToDo.qml</file>
         <file>MyComponents/ViewHeadder.qml</file>
+        <file>MyComponents/PickDateAndTimeView.qml</file>
     </qresource>
 </RCC>
