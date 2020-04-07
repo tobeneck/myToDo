@@ -11,26 +11,43 @@ Page {
     property var currentToDo
 
     function updateUI(){
-        //due date is picked
-        if(!currentToDo.startDateEnabled){
-            pickStartTimeText.text = qsTr("Pick Due Date")
-            pickStartTimeText.color = "grey"
-            deleteDueDate.enabled = false
+        //set the date and time texts
+        if(currentToDo.startDateEnabled){
+            startDatePrefix.color = "black"
+            deleteDueDate.enabled = true
+            if(currentToDo.type === "ToDo"){
+                startDatePrefix.text = qsTr("Due: ")
+                startDate.text = currentToDo.startDate.toLocaleDateString(Qt.locale("de_DE"))
+                startTime.text = ""
+                endDatePrefix.text = ""
+                endDate.text = ""
+                endTime.text = ""
+            }
+            if(currentToDo.type === "Event"){
+                startDatePrefix.text = qsTr("From: ")
+                startDate.text = currentToDo.startDate.toLocaleDateString(Qt.locale("de_DE"))
+                endDatePrefix.text = qsTr("to: ")
+                endDate.text = currentToDo.endDate.toLocaleDateString(Qt.locale("de_DE"))
+                if(currentToDo.allDay){
+                    startTime.text = ""
+                    endTime.text = ""
+                }
+                else{
+                    startTime.text = currentToDo.startDate.toLocaleTimeString("hh:mm")
+                    endTime.text = currentToDo.endDate.toLocaleTimeString("hh:mm")
+                }
+            }
         }
         else{
-            pickStartTimeText.text = qsTr("Due ") + currentToDo.startDate.toLocaleDateString(Qt.locale("de_DE"))
-            pickStartTimeText.color = "black"
-            deleteDueDate.enabled = true
+            startDatePrefix.text = qsTr("Pick Date ")
+            startDate.text = ""
+            startTime.text = ""
+            endDatePrefix.text = ""
+            endDate.text = ""
+            endTime.text = ""
+            startDatePrefix.color = "grey"
+            deleteDueDate.enabled = false
         }
-
-        //if due date
-//            if(currentToDo.startDateEnabled && !currentToDo.endDateEnabled && currentToDo.startTime === 0 && currentToDo.endTime === 0){
-//                pickStartTimeText.text = qsTr("Pick Date and Time")
-//                pickStartTimeText.color = "grey"
-//            }
-        //if just due date and end date
-        //if just due date and time
-        //if both due and end date aswell as time
 
 //            startTimeText.text = currentToDo.startTime === 0 ? qsTr("No starting time") : qsTr("Starting Time: ") + currentToDo.startTime
 //            startTimeText.color = currentToDo.startTime === 0 ? "grey" : "black"
@@ -89,12 +106,31 @@ Page {
 
         GridLayout{
             columns: 2
-            Text{ //TODO: include start time
-                id: startTime
+
+            MouseArea{
+                id: openPickTimeAndDateView
+
+                function resize(){
+                    width =  childrenRect.width
+                    height = childrenRect.height
+                }
+
                 Layout.fillWidth: true
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: stackView.push(pickDateAndTimeView)
+                height: childrenRect.height
+
+                onClicked: stackView.push(pickDateAndTimeView)
+
+                GridLayout{
+                    columns: 4
+                    Text{ id: startDatePrefix; text: qsTr("From ") }
+                    Text{ id: startDate }
+                    Text{ text: " " }
+                    Text{ id: startTime }
+
+                    Text{ id: endDatePrefix; text: qsTr("to ") }
+                    Text{ id: endDate }
+                    Text{ text: " " }
+                    Text{ id: endTime }
                 }
             }
             Button{
