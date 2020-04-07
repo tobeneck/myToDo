@@ -11,6 +11,6 @@
         <file>MyComponents/SwitchViewFooter.qml</file>
         <file>MyComponents/AddToDo.qml</file>
         <file>MyComponents/ViewHeadder.qml</file>
-        <file>MyComponents/PickDateAndTimeView.qml</file>
+        <file>Views/PickDateAndTimeView.qml</file>
     </qresource>
 </RCC>

@@ -48,13 +48,18 @@ Page {
     Component{
         id: pickDateAndTimeView
         PickDateAndTimeView{
-            startDate: currentToDo.startDate
-            endDate: currentToDo.endDate
             type: currentToDo.type
             allDay: currentToDo.allDay
+            Component.onCompleted: {
+                //set this values here to avoid bindings
+                setStartDate(currentToDo.startDate)
+                setEndDate(currentToDo.endDate)
+                currentStartEndTimeDiff = getStartEndTimeDiff()
+            }
+
             onUpdateValues: {
-                currentToDo.startDate = startDate //TODO: just save everythink in a date
-                currentToDo.endDate = endDate
+                currentToDo.startDate = getStartDate() //TODO: just save everythink in a date
+                currentToDo.endDate = getEndDate()
                 currentToDo.allDay = allDay
                 currentToDo.type = type
                 currentToDo.startDateEnabled = true
@@ -85,7 +90,7 @@ Page {
         GridLayout{
             columns: 2
             Text{ //TODO: include start time
-                id: pickStartTimeText
+                id: startTime
                 Layout.fillWidth: true
                 MouseArea{
                     anchors.fill: parent
@@ -97,24 +102,6 @@ Page {
                 text: "x"
                 onClicked: {
                     currentToDo.startDateEnabled = false
-                    currentToDo.startDate = new Date()
-                    root.updateUI()
-                }
-            }
-
-            Text{ //TODO: include start time
-                id: endTimeText
-                Layout.fillWidth: true
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: stackView.push(pickDateAndTimeView)
-                }
-            }
-            Button{
-                text: "x"
-                onClicked: {
-                    currentToDo.endDateEnabled = false
-                    currentToDo.endDate = new Date()
                     root.updateUI()
                 }
             }

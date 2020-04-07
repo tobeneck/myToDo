@@ -3,14 +3,13 @@ import QtQuick.Layouts 1.14 //for the Column-, Row- and GridLayout
 import QtQuick.Controls 1.4 as Controls14 //for the Calendar
 import QtQuick.Controls 2.14 //for the Popup
 
+import "../MyComponents" //for my componenets, duh
+
 
 Page {
     id: pickDateAndTime
 
     signal updateValues()
-
-    property var startDate
-    property var endDate
 
     property var allDay
 
@@ -18,35 +17,52 @@ Page {
 
     property var type
 
-    function getStartEndTimeDiff(){
+    function getStartDate(){
         var currentStartDate = startDatePicker.selectedDate
         currentStartDate = new Date(currentStartDate.setHours(startTimeInput.getHours()))
         currentStartDate = new Date(currentStartDate.setMinutes(startTimeInput.getMinutes()))
         currentStartDate = new Date(currentStartDate.setSeconds(0))
         currentStartDate = new Date(currentStartDate.setMilliseconds(0))
 
+        return currentStartDate
+    }
+
+    function getEndDate(){
         var currentEndDate = endDatePicker.selectedDate
         currentEndDate = new Date(currentEndDate.setHours(endTimeInput.getHours()))
         currentEndDate = new Date(currentEndDate.setMinutes(endTimeInput.getMinutes()))
         currentEndDate = new Date(currentEndDate.setSeconds(0))
         currentEndDate = new Date(currentEndDate.setMilliseconds(0))
 
+        return currentEndDate
+    }
+
+    function setStartDate(startDate){ //date input
+        startTimeInput.setValues(startDate.getHours(), startDate.getMinutes())
+        startDatePicker.selectedDate = startDate
+    }
+
+    function setEndDate(endDate){ //date input
+        endTimeInput.setValues(endDate.getHours(), endDate.getMinutes())
+        endDatePicker.selectedDate = endDate
+    }
+
+    function getStartEndTimeDiff(){
+        var currentStartDate = getStartDate()
+        var currentEndDate = getEndDate()
+
         return currentStartDate.getTime() - currentEndDate.getTime()
     }
 
-    function updateStartDate(){ //something goes baldly wrong here
-        //re set the end date in endTimePicker and the endTimeInput
-        var currentStartDate = startDatePicker.selectedDate
-        currentStartDate = new Date(currentStartDate.setHours(startTimeInput.getHours()))
-        currentStartDate = new Date(currentStartDate.setMinutes(startTimeInput.getMinutes()))
-        currentStartDate = new Date(currentStartDate.setSeconds(0))
-        currentStartDate = new Date(currentStartDate.setMilliseconds(0))
+    function updateStartDate(){
+        //get the current start date
+        var currentStartDate = getStartDate()
 
+        //get the right end date
         var currentEndDate = new Date(currentStartDate.getTime() - currentStartEndTimeDiff)
 
         //update the endDate values
-        endTimeInput.setValues(currentEndDate.getHours(), currentEndDate.getMinutes())
-        endDatePicker.selectedDate = currentEndDate
+        setEndDate(currentEndDate)
 
         //re-set the currentStartEndTimeDiff
         currentStartEndTimeDiff = getStartEndTimeDiff()
@@ -55,30 +71,15 @@ Page {
     function updateEndDate(){
 
         if(getStartEndTimeDiff() >= 0){
-            var currentEndDate = startDatePicker.selectedDate
-            currentEndDate = new Date(currentEndDate.setHours(endTimeInput.getHours()))
-            currentEndDate = new Date(currentEndDate.setMinutes(endTimeInput.getMinutes()))
-            currentEndDate = new Date(currentEndDate.setSeconds(0))
-            currentEndDate = new Date(currentEndDate.setMilliseconds(0))
+            var currentEndDate = getEndDate(9)
 
             var minInMs = 60000
             var currentStartDate = new Date(currentEndDate.getTime() - 5 * minInMs)
-            //update the endDate values
-            startTimeInput.setValues(currentStartDate.getHours(), currentStartDate.getMinutes())
-            startDatePicker.selectedDate = currentStartDate
+            //update the startDate
+            setStartDate(currentStartDate)
         }
 
         //re-set the currentStartEndTimeDiff
-        currentStartEndTimeDiff = getStartEndTimeDiff()
-    }
-
-    Component.onCompleted: {
-        //set this values here to avoid bindings
-        startDatePicker.selectedDate = startDate
-        startTimeInput.setValues(startDate.getHours(), startDate.getMinutes())
-        endDatePicker.selectedDate = endDate
-        endTimeInput.setValues(endDate.getHours(), endDate.getMinutes())
-
         currentStartEndTimeDiff = getStartEndTimeDiff()
     }
 
@@ -201,8 +202,6 @@ Page {
             ToolButton{
                 text: qsTr("Accept")
                 onClicked: {
-                    startDate = new Date(new Date(startDatePicker.selectedDate.setHours(startTimeInput.getHours())).setMinutes(startTimeInput.getMinutes()))
-                    endDate = new Date(new Date(endDatePicker.selectedDate.setHours(endTimeInput.getHours())).setMinutes(endTimeInput.getMinutes()))
                     updateValues()
                     stackView.pop()
                 }
