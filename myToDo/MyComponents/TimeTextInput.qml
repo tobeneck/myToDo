@@ -11,18 +11,28 @@ RowLayout{ //time //TODO: change for the mobile version?
     property int minMinutesBound: 0
     property int maxMinutesBound: 55
 
-    property int hoursValue
-    property int minutesValue
-
     property bool isEnabled: true
 
     property string prefix: qsTr("Pick time: ")
 
-    signal updateStartTime()
+    signal timeManuallyChanged()
+
+    function setValues(hours, minutes){
+        hoursSpinBox.value = hours
+        minutesSpinBox.value = minutes
+
+    }
+
+    function getHours(){
+        return hoursSpinBox.value
+    }
+
+    function getMinutes(){
+        return minutesSpinBox.value
+    }
 
     SpinBox {
         id: hoursSpinBox
-        value: hoursValue
         from: -1
         to: 24
         enabled: isEnabled
@@ -32,8 +42,8 @@ RowLayout{ //time //TODO: change for the mobile version?
                 value = minHourBound
             if(value < minHourBound)
                 value = maxHourBound
-            hoursValue = value
-            updateStartTime()
+
+            timeManuallyChanged()
         }
     }
 
@@ -52,8 +62,8 @@ RowLayout{ //time //TODO: change for the mobile version?
                 value = minMinutesBound
             if(value < minMinutesBound)
                 value = maxMinutesBound
-            minutesValue = value
-            updateStartTime()
+
+            timeManuallyChanged()
         }
         textFromValue: function(value, locale) {
             if(value < 10)

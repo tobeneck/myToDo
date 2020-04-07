@@ -12,49 +12,74 @@ Page {
     property var startDate
     property var endDate
 
-    property bool allDay
+    property var allDay
 
-    property var currentStartEndTimeDiff: startDate.getTime() - endDate.getTime()
+    property var currentStartEndTimeDiff
 
     property var type
 
-    function updateStartDate(){
-        startDate = new Date(new Date(startDatePicker.selectedDate.setHours(startTimeInput.hoursValue)).setMinutes(startTimeInput.minutesValue))
-        endDate = new Date(startDate - currentStartEndTimeDiff)
-        endTimeInput.hoursValue = endDate.getHours()
-        endTimeInput.minutesValue = endDate.getMinutes()
-        endDatePicker.selectedDate = endDate
+    function getStartEndTimeDiff(){
+        var currentStartDate = startDatePicker.selectedDate
+        currentStartDate = new Date(currentStartDate.setHours(startTimeInput.getHours()))
+        currentStartDate = new Date(currentStartDate.setMinutes(startTimeInput.getMinutes()))
+        currentStartDate = new Date(currentStartDate.setSeconds(0))
+        currentStartDate = new Date(currentStartDate.setMilliseconds(0))
 
-        currentStartEndTimeDiff = startDate.getTime() - endDate.getTime()
+        var currentEndDate = endDatePicker.selectedDate
+        currentEndDate = new Date(currentEndDate.setHours(endTimeInput.getHours()))
+        currentEndDate = new Date(currentEndDate.setMinutes(endTimeInput.getMinutes()))
+        currentEndDate = new Date(currentEndDate.setSeconds(0))
+        currentEndDate = new Date(currentEndDate.setMilliseconds(0))
 
+        return currentStartDate.getTime() - currentEndDate.getTime()
+    }
+
+    function updateStartDate(){ //something goes baldly wrong here
+        //re set the end date in endTimePicker and the endTimeInput
+        var currentStartDate = startDatePicker.selectedDate
+        currentStartDate = new Date(currentStartDate.setHours(startTimeInput.getHours()))
+        currentStartDate = new Date(currentStartDate.setMinutes(startTimeInput.getMinutes()))
+        currentStartDate = new Date(currentStartDate.setSeconds(0))
+        currentStartDate = new Date(currentStartDate.setMilliseconds(0))
+
+        var currentEndDate = new Date(currentStartDate.getTime() - currentStartEndTimeDiff)
+
+        //update the endDate values
+        endTimeInput.setValues(currentEndDate.getHours(), currentEndDate.getMinutes())
+        endDatePicker.selectedDate = currentEndDate
+
+        //re-set the currentStartEndTimeDiff
+        currentStartEndTimeDiff = getStartEndTimeDiff()
     }
 
     function updateEndDate(){
-        endDate = endDatePicker.selectedDate
-        currentStartEndTimeDiff = endDate.getTime() - startDate.getTime()
-        print(currentStartEndTimeDiff)
-        var minInMs = 60000
-        if(currentStartEndTimeDiff < 5*minInMs){
 
-            startDate = new Date(endDate.getTime() - minInMs * 5)//5 min down delay
-            startTimeInput.hoursValue = startDate.getHours()
-            startTimeInput.minutesValue = startDate.getMinutes()
-            startDatePicker.selectedDate = startDate
+        if(getStartEndTimeDiff() >= 0){
+            var currentEndDate = startDatePicker.selectedDate
+            currentEndDate = new Date(currentEndDate.setHours(endTimeInput.getHours()))
+            currentEndDate = new Date(currentEndDate.setMinutes(endTimeInput.getMinutes()))
+            currentEndDate = new Date(currentEndDate.setSeconds(0))
+            currentEndDate = new Date(currentEndDate.setMilliseconds(0))
 
-            currentStartEndTimeDiff = startDate.getTime() - endDate.getTime()
-            currentStartEndTimeDiff = endDate.getTime() - startDate.getTime()
+            var minInMs = 60000
+            var currentStartDate = new Date(currentEndDate.getTime() - 5 * minInMs)
+            //update the endDate values
+            startTimeInput.setValues(currentStartDate.getHours(), currentStartDate.getMinutes())
+            startDatePicker.selectedDate = currentStartDate
         }
 
+        //re-set the currentStartEndTimeDiff
+        currentStartEndTimeDiff = getStartEndTimeDiff()
     }
 
     Component.onCompleted: {
         //set this values here to avoid bindings
         startDatePicker.selectedDate = startDate
-        startTimeInput.hoursValue = startDate.getHours()
-        startTimeInput.minutesValue = startDate.getMinutes()
+        startTimeInput.setValues(startDate.getHours(), startDate.getMinutes())
         endDatePicker.selectedDate = endDate
-        endTimeInput.hoursValue = endDate.getHours()
-        endTimeInput.minutesValue = endDate.getMinutes()
+        endTimeInput.setValues(endDate.getHours(), endDate.getMinutes())
+
+        currentStartEndTimeDiff = getStartEndTimeDiff()
     }
 
     ScrollView {
@@ -80,7 +105,41 @@ Page {
             Controls14.Calendar { //TODO: kame shure start date and end date are always right
                 id: startDatePicker
                 Layout.fillWidth: true
-                onSelectedDateChanged: updateStartDate()
+                onClicked: updateStartDate()
+            }
+
+            Text{
+                text: qsTr("Start Time: ")
+                color: type === "Event" ? "black" : "grey"
+            }
+            RowLayout{
+                TimeTextInput{
+                    id: startTimeInput
+                    isEnabled: type === "Event" && allDay1.checked === false //not !allDay
+                    prefix: qsTr("")
+
+                    onTimeManuallyChanged: updateStartDate()
+                }
+
+                Switch{
+                    id: allDay1
+                    position: allDay ? 1.0 : 0.0
+                    enabled: type === "Event"
+                    onClicked: {
+                        if(position == 1.0){
+                            allDay = true
+                            allDay2.checked = true
+                        }
+                        else{
+                            allDay = false
+                            allDay2.checked = false
+                        }
+                    }
+                }
+                Text{
+                    text: qsTr("All day")
+                    color: type === "Event" ? "black" : "grey"
+                }
             }
 
             Text{
@@ -93,41 +152,45 @@ Page {
                 Layout.fillWidth: true
                 enabled: type === "Event"
                 minimumDate: startDatePicker.selectedDate
-                onSelectedDateChanged: updateEndDate()
+                onClicked: updateEndDate()
+            }
+
+            Text{
+                text: qsTr("End Time: ")
+                color: type === "Event" ? "black" : "grey"
             }
 
             RowLayout{
+                TimeTextInput{
+                    id: endTimeInput
+                    isEnabled: type === "Event" && allDay === false //not !allDay
+                    prefix: qsTr("")
+
+                    onTimeManuallyChanged: updateEndDate()
+                }
+
+                Switch{
+                    id: allDay2
+                    position: allDay ? 1.0 : 0.0
+                    enabled: type === "Event"
+
+                    onClicked: {
+                        if(position == 1.0){
+                            allDay = true
+                            allDay1.checked = true
+                        }
+                        else{
+                            allDay = false
+                            allDay1.checked = false
+                        }
+                    }
+                }
                 Text{
                     text: qsTr("All day")
                     color: type === "Event" ? "black" : "grey"
                 }
-                Switch{
-                    position: allDay ? 1.0 : 0.0
-                    enabled: type === "Event"
-                    onPositionChanged: {
-                        if(position == 1.0)
-                            allDay == true
-                        else
-                            allDay == false
-                    }
-                }
             }
 
-            TimeTextInput{
-                id: startTimeInput
-                isEnabled: type === "Event" && !allDay
-                prefix: qsTr("Pick start time: ")
-
-                onUpdateStartTime: updateStartDate()
-            }
-
-            TimeTextInput{
-                id: endTimeInput
-                isEnabled: type === "Event" && !allDay
-                prefix: qsTr("Pick end time: ")
-
-                onUpdateStartTime: updateStartDate()
-            }
         }//ColumnLayout
     }//ScrollView
 
@@ -138,8 +201,8 @@ Page {
             ToolButton{
                 text: qsTr("Accept")
                 onClicked: {
-                    startDate = new Date(new Date(startDatePicker.selectedDate.setHours(startTimeInput.hoursValue)).setMinutes(startTimeInput.minutesValue))
-                    endDate = new Date(new Date(endDatePicker.selectedDate.setHours(endTimeInput.hoursValue)).setMinutes(endTimeInput.minutesValue))
+                    startDate = new Date(new Date(startDatePicker.selectedDate.setHours(startTimeInput.getHours())).setMinutes(startTimeInput.getMinutes()))
+                    endDate = new Date(new Date(endDatePicker.selectedDate.setHours(endTimeInput.getHours())).setMinutes(endTimeInput.getMinutes()))
                     updateValues()
                     stackView.pop()
                 }

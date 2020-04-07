@@ -62,7 +62,6 @@ Page {
                 currentToDo.changedNumber = currentToDo.changedNumber + 1
                 updateUI()
             }
-
         }
     }
 
