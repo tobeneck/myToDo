@@ -3,12 +3,34 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
 
-import "../MyComponents"
+import "../../MyComponents"
+import "Components"
 
 Page {
+    id: editToDoView
     title: todoListModel.get(currentIndex).title
 
     property var currentToDo
+
+    ListModel{
+        id: repeatListModel
+        ListElement{ name: qsTr("Don't repeat") }
+        ListElement{ name: qsTr("Day") }
+        ListElement{ name: qsTr("Week") }
+        ListElement{ name: qsTr("Month") }
+        ListElement{ name: qsTr("Year") }
+    }
+
+    ListModel{
+        id: remindListModel
+        ListElement{ name: qsTr("Don't remind") }
+        ListElement{ name: qsTr("Minutes bevore") }
+        ListElement{ name: qsTr("Hours bevore") }
+        ListElement{ name: qsTr("Days bevore") }
+        ListElement{ name: qsTr("Weeks bevore") }
+        ListElement{ name: qsTr("Months bevore") }
+        ListElement{ name: qsTr("Years bevore") }
+    }
 
     function updateUI(){
         //set the date and time texts
@@ -49,57 +71,43 @@ Page {
             deleteDueDate.enabled = false
         }
 
-//            startTimeText.text = currentToDo.startTime === 0 ? qsTr("No starting time") : qsTr("Starting Time: ") + currentToDo.startTime
-//            startTimeText.color = currentToDo.startTime === 0 ? "grey" : "black"
+        if(currentToDo.remindID !== 0){
+            deleteReminder.enabled = true
+            reminderText.color = "black"
+            if(currentToDo.type === "Event")
+                reminderText.text = qsTr("Reminder: ") + currentToDo.remindTime + " " + remindListModel.get(currentToDo.remindID).name +qsTr(" bevore")
+            else
+                reminderText.text = qsTr("Reminder: ") + currentToDo.remindTime + " " + remindListModel.get(currentToDo.remindID).name +qsTr(" at ") + currentToDo.remindDate.toLocaleTimeString("hh:mm")
+        }
+        else{
+            deleteReminder.enabled = false
+            reminderText.color = "grey"
+            reminderText.text = qsTr("No reminder")
+        }
 
-//            durationText.text = currentToDo.duration === 0 ? qsTr("No duration") : qsTr("Duration: ") + currentToDo.duration
-//            durationText.color = currentToDo.duration === 0 ? "grey" : "black"
-
-//            reminderText.text = currentToDo.reminder === 0 ? qsTr("Don't remind me") : qsTr("Remind me ") + currentToDo.reminder + "bevore" //TODO: change
-//            reminderText.color = currentToDo.reminder === 0 ? "grey" : "black"
-
-//            repeatText.text = currentToDo.repeatID === -1 ? qsTr("Don't repeat") : qsTr("Repeat every ") + currentToDo.repeatTime + " " + repeatListModel.get(currentToDo.repeatID).name
-//            repeatText.color = currentToDo.repeatID === -1 ? "grey" : "black"
-    }
-
-    Component{
-        id: pickDateAndTimeView
-        PickDateAndTimeView{
-            type: currentToDo.type
-            allDay: currentToDo.allDay
-            Component.onCompleted: {
-                //set this values here to avoid bindings
-                setStartDate(currentToDo.startDate)
-                setEndDate(currentToDo.endDate)
-                currentStartEndTimeDiff = getStartEndTimeDiff()
-            }
-
-            onUpdateValues: {
-                currentToDo.startDate = getStartDate() //TODO: just save everythink in a date
-                currentToDo.endDate = getEndDate()
-                currentToDo.allDay = allDay
-                currentToDo.type = type
-                currentToDo.startDateEnabled = true
-                //TODO: set the changedTate and changedTime here
-                currentToDo.changedNumber = currentToDo.changedNumber + 1
-                updateUI()
-            }
+        if(currentToDo.repeatID !== 0){
+            deletRepeat.enabled = true
+            repeatText.color = "black"
+            repeatText.text = qsTr("Repeat every ") + currentToDo.repeatTime + " " + repeatListModel.get(currentToDo.repeatID).name
+        }
+        else{
+            deletRepeat.enabled = false
+            repeatText.color = "grey"
+            repeatText.text = qsTr("Don't repeat")
         }
     }
 
-
-    ListModel{
-        id: repeatListModel
-        ListElement{ name: qsTr("Don't repeat") }
-        ListElement{ name: qsTr("Day") }
-        ListElement{ name: qsTr("Week") }
-        ListElement{ name: qsTr("Month") }
-        ListElement{ name: qsTr("Year") }
+    Component{
+        id: pickTimeView
+        PickTimeView{
+            currentToDo: editToDoView.currentToDo
+            onUpdateValues: updateUI()
+        }
     }
 
     ColumnLayout{
-        id: root
         anchors.fill: parent
+        anchors.margins: 5
 
         Component.onCompleted: updateUI()
 
@@ -107,18 +115,13 @@ Page {
         GridLayout{
             columns: 2
 
+            rowSpacing: 10
+
             MouseArea{
-                id: openPickTimeAndDateView
-
-                function resize(){
-                    width =  childrenRect.width
-                    height = childrenRect.height
-                }
-
                 Layout.fillWidth: true
                 height: childrenRect.height
 
-                onClicked: stackView.push(pickDateAndTimeView)
+                onClicked: stackView.push(pickTimeView)
 
                 GridLayout{
                     columns: 4
@@ -138,20 +141,10 @@ Page {
                 text: "x"
                 onClicked: {
                     currentToDo.startDateEnabled = false
-                    root.updateUI()
+                    currentToDo.repeatID = 0
+                    currentToDo.remindID = 0
+                    updateUI()
                 }
-            }
-
-            Text{ //TODO: activate/show when ready
-                id: reminderText
-                Layout.fillWidth: true
-                MouseArea{
-                    anchors.fill: parent
-                    //onClicked:
-                }
-            }
-            Button{
-                text: "x"
             }
 
             Text{ //TODO: activate/enable when ready
@@ -159,14 +152,33 @@ Page {
                 Layout.fillWidth: true
                 MouseArea{
                     anchors.fill: parent
-                    //onClicked:
+                    onClicked: stackView.push(pickTimeView)
                 }
             }
             Button{
+                id: deletRepeat
                 text: "x"
                 onClicked: {
-                    currentToDo.repeatID = -1
-                    root.updateUI()
+                    currentToDo.repeatID = 0
+                    updateUI()
+                }
+            }
+
+            Text{ //TODO: activate/show when ready
+                id: reminderText
+                Layout.fillWidth: true
+                text: qsTr("Repeat: ")
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: stackView.push(pickTimeView)
+                }
+            }
+            Button{
+                id: deleteReminder
+                text: "x"
+                onClicked: {
+                    currentToDo.remindID = 0
+                    updateUI()
                 }
             }
         } //GridLayout

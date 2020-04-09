@@ -3,14 +3,16 @@
         <file>Main/main.qml</file>
         <file>Views/ToDoListView.qml</file>
         <file>Views/PickToDoListView.qml</file>
-        <file>Views/EditToDoView.qml</file>
         <file>Views/CategoryView.qml</file>
         <file>Views/CalendarView.qml</file>
         <file>MyComponents/ToDo.qml</file>
-        <file>MyComponents/TimeTextInput.qml</file>
         <file>MyComponents/SwitchViewFooter.qml</file>
         <file>MyComponents/AddToDo.qml</file>
         <file>MyComponents/ViewHeadder.qml</file>
-        <file>Views/PickDateAndTimeView.qml</file>
+        <file>Views/EditToDoView/EditToDoView.qml</file>
+        <file>Views/EditToDoView/Components/TimeTextInput.qml</file>
+        <file>Views/EditToDoView/PickEventTimeView.qml</file>
+        <file>Views/EditToDoView/PickTimeView.qml</file>
+        <file>Views/EditToDoView/PickToDoTimeView.qml</file>
     </qresource>
 </RCC>

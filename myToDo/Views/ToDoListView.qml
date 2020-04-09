@@ -5,6 +5,7 @@ import Backend 1.0
 import ToDo 1.0
 
 import "../MyComponents"
+import "./EditToDoView"
 
 Page {
     title: qsTr("ToDo List "+ currentTag)
@@ -48,13 +49,14 @@ Page {
                 endDate = new Date(endDate.setSeconds(0))
                 endDate = new Date(endDate.setMilliseconds(0))
 
+                var remindDate = new Date(startDate.getTime() - 15 * 60000) //15 mins bevore start date
+                remindDate = new Date(endDate.setSeconds(0))
+                remindDate = new Date(endDate.setMilliseconds(0))
+
                 todoListModel.append({
                                  "creationDate": new Date(),
-                                 "creationTime": "TODO",
                                  "changedDate": new Date(),
-                                 "changedTime": "TODO",
                                  "changedNumber": 0,
-                                 //instead of going by time maybe make some kind of revision number or something (indipendent of tine zones)? or save both!
 
                                  "title": title,
                                  "done": false,
@@ -70,9 +72,13 @@ Page {
 
                                  "repeatID": 0, //0 do not repeat, 1: days, 2: weeks, 3: months, 4: years
                                  "repeatTime": 0, //every x ID
-                                 "reminder": 0, //mins bevore
-                                 "duration": 0, //duration in mins
-                                 "notes": ""})
+
+                                 "remindID": 0, //0 don't remind, 2: mins, 2: hours, 3:days, 4:weeks, 5:months: 6:years
+                                 "remindTime": 15,
+                                 "remindDate": remindDate,
+
+                                 "notes": ""
+                                     })
             }
         }
 

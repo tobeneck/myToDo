@@ -3,7 +3,8 @@ import QtQuick.Layouts 1.14 //for the Column-, Row- and GridLayout
 import QtQuick.Controls 1.4 as Controls14 //for the Calendar
 import QtQuick.Controls 2.14 //for the Popup
 
-import "../MyComponents" //for my componenets, duh
+import "../../MyComponents"
+import "Components" //for my componenets, duh
 
 
 Page {
@@ -15,8 +16,6 @@ Page {
 
     property var currentStartEndTimeDiff
 
-    property var type
-
     function getStartDate(){
         var currentStartDate = startDatePicker.selectedDate
         currentStartDate = new Date(currentStartDate.setHours(startTimeInput.getHours()))
@@ -25,6 +24,11 @@ Page {
         currentStartDate = new Date(currentStartDate.setMilliseconds(0))
 
         return currentStartDate
+    }
+    function setStartDate(startDate){
+        startTimeInput.setHours(startDate.getHours())
+        startTimeInput.setMinutes(startDate.getMinutes())
+        startDatePicker.selectedDate = startDate
     }
 
     function getEndDate(){
@@ -36,16 +40,23 @@ Page {
 
         return currentEndDate
     }
-
-    function setStartDate(startDate){ //date input
-        startTimeInput.setValues(startDate.getHours(), startDate.getMinutes())
-        startDatePicker.selectedDate = startDate
-    }
-
     function setEndDate(endDate){ //date input
-        endTimeInput.setValues(endDate.getHours(), endDate.getMinutes())
+        endTimeInput.setHours(endDate.getHours())
+        endTimeInput.setMinutes(endDate.getMinutes())
         endDatePicker.selectedDate = endDate
     }
+
+    function getRepeatID(){ return repeatComboBox.currentIndex }
+    function setRepeatID(repeatID){ repeatComboBox.currentIndex = repeatID }
+
+    function getRepeatTime(){ return repeatSpinBox.value }
+    function setRepeatTime(repeatTime){ repeatSpinBox.value = repeatTime }
+
+    function getRemindID(){ return reminderComboBox.currentIndex }
+    function setRemindID(remindID){ reminderComboBox.currentIndex = remindID }
+
+    function getRemindTime(){ return reminderSpinBox.value }
+    function setRemindTime(remindTime){ reminderSpinBox.value = remindTime }
 
     function getStartEndTimeDiff(){
         var currentStartDate = getStartDate()
@@ -69,7 +80,6 @@ Page {
     }
 
     function updateEndDate(){
-
         if(getStartEndTimeDiff() >= 0){
             var currentEndDate = getEndDate(9)
 
@@ -100,7 +110,7 @@ Page {
             spacing: 10
 
             Text{
-                text: type === "ToDo" ? qsTr("Due Date:") : qsTr("Start Date:")
+                text: qsTr("Start Date:")
             }
 
             Controls14.Calendar { //TODO: kame shure start date and end date are always right
@@ -111,12 +121,11 @@ Page {
 
             Text{
                 text: qsTr("Start Time: ")
-                color: type === "Event" ? "black" : "grey"
             }
             RowLayout{
                 TimeTextInput{
                     id: startTimeInput
-                    isEnabled: type === "Event" && allDay1.checked === false //not !allDay
+                    isEnabled: allDay1.checked === false
                     prefix: qsTr("")
 
                     onTimeManuallyChanged: updateStartDate()
@@ -125,7 +134,6 @@ Page {
                 Switch{
                     id: allDay1
                     position: allDay ? 1.0 : 0.0
-                    enabled: type === "Event"
                     onClicked: {
                         if(position == 1.0){
                             allDay = true
@@ -139,32 +147,28 @@ Page {
                 }
                 Text{
                     text: qsTr("All day")
-                    color: type === "Event" ? "black" : "grey"
                 }
             }
 
             Text{
                 text: qsTr("End Date:")
-                color: type === "Event" ? "black" : "grey"
             }
 
             Controls14.Calendar {
                 id: endDatePicker
                 Layout.fillWidth: true
-                enabled: type === "Event"
                 minimumDate: startDatePicker.selectedDate
                 onClicked: updateEndDate()
             }
 
             Text{
                 text: qsTr("End Time: ")
-                color: type === "Event" ? "black" : "grey"
             }
 
             RowLayout{
                 TimeTextInput{
                     id: endTimeInput
-                    isEnabled: type === "Event" && allDay === false //not !allDay
+                    isEnabled: allDay === false
                     prefix: qsTr("")
 
                     onTimeManuallyChanged: updateEndDate()
@@ -173,7 +177,6 @@ Page {
                 Switch{
                     id: allDay2
                     position: allDay ? 1.0 : 0.0
-                    enabled: type === "Event"
 
                     onClicked: {
                         if(position == 1.0){
@@ -188,46 +191,56 @@ Page {
                 }
                 Text{
                     text: qsTr("All day")
-                    color: type === "Event" ? "black" : "grey"
                 }
             }
+
+            Text{
+                text: qsTr("Repeat: ")
+            }
+            RowLayout{ //repeat
+                SpinBox {
+                    id: repeatSpinBox
+                    value: 1
+                    from: 1
+                    editable: true
+                    enabled: repeatComboBox.currentIndex !== 0
+                    onValueChanged: {
+                        if(value === 0)
+                            value = 1
+                    }
+                }
+                ComboBox{
+                    id: repeatComboBox
+                    model: repeatListModel
+                    textRole: "name"
+                    editText: textRole
+                }
+            }//repeat
+
+            Text{
+                text: qsTr("Reminder: ")
+            }
+            RowLayout{ //reminder
+                SpinBox {
+                    id: reminderSpinBox
+                    value: 15
+                    from: 1
+                    editable: true
+                    enabled: reminderComboBox.currentIndex !== 0
+                    onValueChanged: {
+                        if(value === 0)
+                            value = 1
+                    }
+                }
+                ComboBox{
+                    id: reminderComboBox
+                    model: remindListModel
+                    textRole: "name"
+                    editText: textRole
+                }
+            }//reminder
 
         }//ColumnLayout
     }//ScrollView
-
-
-    header: ToolBar{
-        RowLayout{
-            anchors.fill: parent
-            ToolButton{
-                text: qsTr("Accept")
-                onClicked: {
-                    updateValues()
-                    stackView.pop()
-                }
-            }
-
-            RowLayout{
-                Text{
-                    text: qsTr("ToDo")
-                    color: type !== "ToDo" ? "grey" : "black"
-                }
-                Switch {
-                    id: toDoEventSwitch
-                    onPositionChanged: position === 0.0 ? pickDateAndTime.type = "ToDo" : pickDateAndTime.type = "Event"
-                    Component.onCompleted: position = pickDateAndTime.type === "ToDo" ? 0.0 : 1.0
-                }
-                Text{
-                    text: qsTr("Event")
-                    color: type !== "Event" ? "grey" : "black"
-                }
-            }
-
-            ToolButton{
-                text: qsTr("Cancel")
-                onClicked: stackView.pop()
-            }
-        }
-    }
 
 }//Page

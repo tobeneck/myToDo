@@ -17,10 +17,12 @@ RowLayout{ //time //TODO: change for the mobile version?
 
     signal timeManuallyChanged()
 
-    function setValues(hours, minutes){
+    function setHours(hours, minutes){
         hoursSpinBox.value = hours
-        minutesSpinBox.value = minutes
+    }
 
+    function setMinutes(minutes){
+        minutesSpinBox.value = minutes
     }
 
     function getHours(){
@@ -51,7 +53,6 @@ RowLayout{ //time //TODO: change for the mobile version?
 
     SpinBox {
         id: minutesSpinBox
-        value: minutesValue
         from: -1
         to: 60
         stepSize: 5
