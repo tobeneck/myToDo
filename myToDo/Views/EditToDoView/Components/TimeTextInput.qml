@@ -1,6 +1,6 @@
 import QtQuick 2.0
-import QtQuick.Layouts 1.14 //RowLayout
- import QtQuick.Controls 2.14 //TextField
+import QtQuick.Layouts 1.13 //RowLayout
+ import QtQuick.Controls 2.13 //TextField
 
 RowLayout{ //time //TODO: change for the mobile version?
     Text{ text: prefix; color: isEnabled ? "black" : "grey" }

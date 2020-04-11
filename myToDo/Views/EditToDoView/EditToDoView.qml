@@ -1,7 +1,7 @@
-import QtQuick 2.14
-import QtQuick.Controls 1.4
-import QtQuick.Controls 2.14
-import QtQuick.Layouts 1.14
+import QtQuick 2.13
+import QtQuick.Controls 1.3
+import QtQuick.Controls 2.13
+import QtQuick.Layouts 1.13
 
 import "../../MyComponents"
 import "Components"

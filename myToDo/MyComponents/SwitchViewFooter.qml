@@ -1,6 +1,6 @@
 import QtQuick 2.0
-import QtQuick.Controls 2.14//ToolBar, RadioButton
-import QtQuick.Layouts 1.14 //RowLayout
+import QtQuick.Controls 2.13//ToolBar, RadioButton
+import QtQuick.Layouts 1.13 //RowLayout
 
 ToolBar {
     anchors.left: parent.left

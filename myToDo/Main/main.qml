@@ -1,7 +1,7 @@
-import QtQuick 2.14
-import QtQuick.Controls 2.14
+import QtQuick 2.13
+import QtQuick.Controls 2.13
 import Backend 1.0
-import QtQuick.Layouts 1.14 //for RowLayout
+import QtQuick.Layouts 1.13 //for RowLayout
 
 
 import "../MyComponents"

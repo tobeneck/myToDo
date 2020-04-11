@@ -1,7 +1,7 @@
 import QtQuick 2.0
-import QtQuick.Layouts 1.14 //for the Column-, Row- and GridLayout
-import QtQuick.Controls 1.4 as Controls14 //for the Calendar
-import QtQuick.Controls 2.14 //for the Popup
+import QtQuick.Layouts 1.13 //for the Column-, Row- and GridLayout
+import QtQuick.Controls 1.3 as Controls14 //for the Calendar
+import QtQuick.Controls 2.13 //for the Popup
 
 import "../../MyComponents"
 import "Components"
