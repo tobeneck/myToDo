@@ -96,7 +96,6 @@ Page {
     ScrollView {
         contentWidth: -1
 
-
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.bottom: parent.bottom

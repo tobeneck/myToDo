@@ -14,5 +14,8 @@
         <file>Views/EditToDoView/PickEventTimeView.qml</file>
         <file>Views/EditToDoView/PickTimeView.qml</file>
         <file>Views/EditToDoView/PickToDoTimeView.qml</file>
+        <file>Views/EditToDoView/Components/TimeComponent.qml</file>
+        <file>Views/EditToDoView/Components/SubToDosComponent.qml</file>
+        <file>Views/EditToDoView/Components/NotesComponent.qml</file>
     </qresource>
 </RCC>

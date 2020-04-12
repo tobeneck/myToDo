@@ -1,5 +1,4 @@
 import QtQuick 2.13
-import QtQuick.Controls 1.3
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 
@@ -33,69 +32,11 @@ Page {
     }
 
     function updateUI(){
-        //set the date and time texts
-        if(currentToDo.startDateEnabled){
-            startDatePrefix.color = "black"
-            deleteDueDate.enabled = true
-            if(currentToDo.type === "ToDo"){
-                startDatePrefix.text = qsTr("Due: ")
-                startDate.text = currentToDo.startDate.toLocaleDateString(Qt.locale("de_DE"))
-                startTime.text = ""
-                endDatePrefix.text = ""
-                endDate.text = ""
-                endTime.text = ""
-            }
-            if(currentToDo.type === "Event"){
-                startDatePrefix.text = qsTr("From: ")
-                startDate.text = currentToDo.startDate.toLocaleDateString(Qt.locale("de_DE"))
-                endDatePrefix.text = qsTr("to: ")
-                endDate.text = currentToDo.endDate.toLocaleDateString(Qt.locale("de_DE"))
-                if(currentToDo.allDay){
-                    startTime.text = ""
-                    endTime.text = ""
-                }
-                else{
-                    startTime.text = currentToDo.startDate.toLocaleTimeString("hh:mm")
-                    endTime.text = currentToDo.endDate.toLocaleTimeString("hh:mm")
-                }
-            }
-        }
-        else{
-            startDatePrefix.text = qsTr("Pick Date ")
-            startDate.text = ""
-            startTime.text = ""
-            endDatePrefix.text = ""
-            endDate.text = ""
-            endTime.text = ""
-            startDatePrefix.color = "grey"
-            deleteDueDate.enabled = false
-        }
+        timeComponent.updateValues(currentToDo)
 
-        if(currentToDo.remindID !== 0){
-            deleteReminder.enabled = true
-            reminderText.color = "black"
-            if(currentToDo.type === "Event")
-                reminderText.text = qsTr("Reminder: ") + currentToDo.remindTime + " " + remindListModel.get(currentToDo.remindID).name +qsTr(" bevore")
-            else
-                reminderText.text = qsTr("Reminder: ") + currentToDo.remindTime + " " + remindListModel.get(currentToDo.remindID).name +qsTr(" at ") + currentToDo.remindDate.toLocaleTimeString("hh:mm")
-        }
-        else{
-            deleteReminder.enabled = false
-            reminderText.color = "grey"
-            reminderText.text = qsTr("No reminder")
-        }
-
-        if(currentToDo.repeatID !== 0){
-            deletRepeat.enabled = true
-            repeatText.color = "black"
-            repeatText.text = qsTr("Repeat every ") + currentToDo.repeatTime + " " + repeatListModel.get(currentToDo.repeatID).name
-        }
-        else{
-            deletRepeat.enabled = false
-            repeatText.color = "grey"
-            repeatText.text = qsTr("Don't repeat")
-        }
     }
+
+    Component.onCompleted: updateUI()
 
     Component{
         id: pickTimeView
@@ -105,145 +46,91 @@ Page {
         }
     }
 
-    ColumnLayout{
+    ScrollView{
+        id: scrolView
+        clip: true
         anchors.fill: parent
-        anchors.margins: 5
+        anchors.leftMargin: 20
+        anchors.rightMargin: 20
+        anchors.topMargin: 10
+//        anchors.bottomMargin: 10
+        contentWidth: -1
+        contentHeight: timeComponent.height + subToDosComponent.height + notesComponent.height + 15 //15=3*anchorMargins
 
-        Component.onCompleted: updateUI()
+//            //Categorys
+//            RowLayout{
+//                Layout.fillWidth: true
+//                ComboBox {
+//                    Layout.fillWidth: true
+//                    id: categoryBox
+//                    editable: true
+//                    model: categorys
 
+//                    textRole: "text"
 
-        GridLayout{
-            columns: 2
+//                    onAccepted: {
+//                        if (find(currentText) === -1) {
+//                            categorys.append({text: editText})
+//                            currentIndex = find(editText)
+//                        }
+//                    }
+//                }
+//                Button{
+//                    text: qsTr("Edit Categorys")
+//                    onClicked: print("ToDo: add edit categorys")
+//                }
+//            }
 
-            rowSpacing: 10
+//            //Status
+//            ComboBox {
+//                id: statusBox
 
-            MouseArea{
-                Layout.fillWidth: true
-                height: childrenRect.height
+//                textRole: "text"
 
-                onClicked: stackView.push(pickTimeView)
+//                editable: true
+//                model: categorys
+//                onAccepted: {
+//                    if (find(currentText) === 0) {
+//                        model.append({text: editText})
+//                        currentIndex = find(editText)
+//                    }
+//                }
+//            }
 
-                GridLayout{
-                    columns: 4
-                    Text{ id: startDatePrefix; text: qsTr("From ") }
-                    Text{ id: startDate }
-                    Text{ text: " " }
-                    Text{ id: startTime }
+        TimeComponent{
+            id: timeComponent
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
 
-                    Text{ id: endDatePrefix; text: qsTr("to ") }
-                    Text{ id: endDate }
-                    Text{ text: " " }
-                    Text{ id: endTime }
-                }
-            }
-            Button{
-                id: deleteDueDate
-                text: "x"
-                onClicked: {
-                    currentToDo.startDateEnabled = false
-                    currentToDo.repeatID = 0
-                    currentToDo.remindID = 0
-                    updateUI()
-                }
-            }
-
-            Text{ //TODO: activate/enable when ready
-                id: repeatText
-                Layout.fillWidth: true
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: stackView.push(pickTimeView)
-                }
-            }
-            Button{
-                id: deletRepeat
-                text: "x"
-                onClicked: {
-                    currentToDo.repeatID = 0
-                    updateUI()
-                }
-            }
-
-            Text{ //TODO: activate/show when ready
-                id: reminderText
-                Layout.fillWidth: true
-                text: qsTr("Repeat: ")
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: stackView.push(pickTimeView)
-                }
-            }
-            Button{
-                id: deleteReminder
-                text: "x"
-                onClicked: {
-                    currentToDo.remindID = 0
-                    updateUI()
-                }
-            }
-        } //GridLayout
-
-
-        //Categorys
-        RowLayout{
-            Layout.fillWidth: true
-            ComboBox {
-                Layout.fillWidth: true
-                id: categoryBox
-                editable: true
-                model: categorys
-
-                textRole: "text"
-
-                onAccepted: {
-                    if (find(currentText) === -1) {
-                        categorys.append({text: editText})
-                        currentIndex = find(editText)
-                    }
-                }
-            }
-            Button{
-                text: qsTr("Edit Categorys")
-                onClicked: print("ToDo: add edit categorys")
-            }
         }
 
-        //Status
-        ComboBox {
-            id: statusBox
+        SubToDosComponent{
+            id: subToDosComponent
 
-            textRole: "text"
+            onHeightChanged: timeComponent.height + subToDosComponent.height + notesComponent.height + 15
 
-            editable: true
-            model: categorys
-            onAccepted: {
-                if (find(currentText) === 0) {
-                    model.append({text: editText})
-                    currentIndex = find(editText)
-                }
-            }
+            anchors.topMargin: 5
+            anchors.top: timeComponent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+
         }
-
-        //TODO: sub EditToDos
 
 
         //Notes
-        Rectangle{
-            border.width: 3
-            border.color: "grey"
-            radius: 3
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            TextArea{
-                anchors.fill: parent
-                text: currentToDo.notes
-                onTextChanged: currentToDo.notes = text
-            }
+        NotesComponent{
+            id: notesComponent
+            anchors.topMargin: 5
+            anchors.top: subToDosComponent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
         }
 
         //TODO: comments
 
     }
+
 
     header: ViewHeadder{
 

@@ -77,6 +77,8 @@ Page {
                                  "remindTime": 15,
                                  "remindDate": remindDate,
 
+                                 "subToDos": [],
+
                                  "notes": ""
                                      })
             }
