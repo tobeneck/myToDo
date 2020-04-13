@@ -33,7 +33,6 @@ Page {
 
     function updateUI(){
         timeComponent.updateValues(currentToDo)
-
     }
 
     Component.onCompleted: updateUI()
@@ -114,6 +113,8 @@ Page {
             anchors.top: timeComponent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
+
+            subToDosModel: currentToDo.subToDos
 
         }
 

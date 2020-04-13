@@ -86,6 +86,7 @@ ApplicationWindow {
     ListModel{
         id: todos
     }
+
     ListModel {
         id: categorys
         ListElement {

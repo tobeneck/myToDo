@@ -10,6 +10,8 @@ Rectangle{
     border.width: 2
     radius: 3
 
+    property var subToDosModel
+
     Text{
         id: subToDosHeadline
         anchors.top: parent.top
@@ -41,8 +43,10 @@ Rectangle{
         //anchors.bottom: parent.bottom
         anchors.top: addSubToDo.bottom
         anchors.margins: 5
-        height: model.count * 40 + model.count*spacing//delegateHeight
-        model: currentToDo.subToDos
+
+        model: subToDosModel
+
+        height: subToDosModel.count * 40 + subToDosModel.count*spacing//delegateHeight
 
         spacing: 5
 
