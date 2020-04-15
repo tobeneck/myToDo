@@ -3,6 +3,7 @@ import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
 import Backend 1.0
 import ToDo 1.0
+import QtQml.Models 2.3 //for the filterModel
 
 import "../MyComponents"
 import "./EditToDoView"
@@ -99,6 +100,10 @@ Page {
             todoListModel.get(todoListModel.count - 1).labels.append({"name": labels.get(i).name, "color": labels.get(i).done})
     }
 
+    SortFilterModel{
+
+    }
+
     Component{
         id: editToDoView
         EditToDoView{
@@ -137,7 +142,7 @@ Page {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.margins: 5
-                height: addToDoField.height
+                height: addToDoField.height //set height to 0 if done to filter
 
                 border.color: "grey"
                 border.width: 2
@@ -169,15 +174,15 @@ Page {
                                 newEndDate = new Date(endDate.setDate(endDate.getDate() + repeatTime))
                                 break;
                             case 2:
-                                newStartDate = new Date(startDate.setDate(startDate.getDate() + remindTime * 7))
+                                newStartDate = new Date(startDate.setDate(startDate.getDate() + repeatTime * 7))
                                 newEndDate = new Date(endDate.setDate(endDate.getDate() + remindTime * 7))
                                 break;
                             case 3:
-                                newStartDate = new Date(startDate.setMonth(startDate.getMonth() + remindTime))
+                                newStartDate = new Date(startDate.setMonth(startDate.getMonth() + repeatTime))
                                 newEndDate = new Date(endDate.setMonth(endDate.getMonth() + remindTime))
                                 break;
                             case 4:
-                                newStartDate = new Date(startDate.setMonth(startDate.getMonth() + remindTime * 12))
+                                newStartDate = new Date(startDate.setMonth(startDate.getMonth() + repeatTime * 12))
                                 newEndDate = new Date(endDate.setMonth(endDate.getMonth() + remindTime * 12))
                                 break;
                             default:

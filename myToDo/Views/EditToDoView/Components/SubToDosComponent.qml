@@ -69,6 +69,7 @@ Rectangle{
             Text{
                 anchors.left: subToDoDone.right
                 anchors.right: delSubToDo.left
+                anchors.verticalCenter: parent.verticalCenter
                 text: name
                 color: done ? "grey" : "black"
 

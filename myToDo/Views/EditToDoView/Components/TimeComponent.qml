@@ -2,10 +2,10 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.13 //GridLayout
 import QtQuick.Controls 2.4
 
-GridLayout{
-    columns: 2
-
-    rowSpacing: 10
+Rectangle{
+    border.width: 2
+    border.color: "grey"
+    radius: 3
 
     function updateValues(currentToDo){
         //set the date and time texts
@@ -72,68 +72,91 @@ GridLayout{
         }
     }
 
-    MouseArea{
-        Layout.fillWidth: true
-        height: childrenRect.height
 
-        onClicked: stackView.push(pickTimeView)
+    GridLayout{
+        columns: 2
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.margins: 5
 
-        GridLayout{
-            columns: 4
-            Text{ id: startDatePrefix; text: qsTr("From ") }
-            Text{ id: startDate }
-            Text{ text: " " }
-            Text{ id: startTime }
+        rowSpacing: 5
 
-            Text{ id: endDatePrefix; text: qsTr("to ") }
-            Text{ id: endDate }
-            Text{ text: " " }
-            Text{ id: endTime }
-        }
-    }
-    Button{
-        id: deleteDueDate
-        text: "x"
-        onClicked: {
-            currentToDo.startDateEnabled = false
-            currentToDo.repeatID = 0
-            currentToDo.remindID = 0
-            updateUI()
-        }
-    }
-
-    Text{ //TODO: activate/enable when ready
-        id: repeatText
-        Layout.fillWidth: true
         MouseArea{
-            anchors.fill: parent
-            onClicked: stackView.push(pickTimeView)
-        }
-    }
-    Button{
-        id: deletRepeat
-        text: "x"
-        onClicked: {
-            currentToDo.repeatID = 0
-            updateUI()
-        }
-    }
+            Layout.fillWidth: true
+            height: childrenRect.height
 
-    Text{ //TODO: activate/show when ready
-        id: reminderText
-        Layout.fillWidth: true
-        text: qsTr("Repeat: ")
-        MouseArea{
-            anchors.fill: parent
+            Layout.topMargin: 5
+
             onClicked: stackView.push(pickTimeView)
+
+            GridLayout{
+                columns: 4
+                Text{ id: startDatePrefix; text: qsTr("From ") }
+                Text{ id: startDate }
+                Text{ text: " " }
+                Text{ id: startTime }
+
+                Text{ id: endDatePrefix; text: qsTr("to ") }
+                Text{ id: endDate }
+                Text{ text: " " }
+                Text{ id: endTime }
+            }
         }
-    }
-    Button{
-        id: deleteReminder
-        text: "x"
-        onClicked: {
-            currentToDo.remindID = 0
-            updateUI()
+        Button{
+            id: deleteDueDate
+
+            Layout.topMargin: 5
+
+            text: "x"
+            onClicked: {
+                currentToDo.startDateEnabled = false
+                currentToDo.repeatID = 0
+                currentToDo.remindID = 0
+                updateUI()
+            }
         }
-    }
-} //GridLayout
+
+        Text{ //TODO: activate/enable when ready
+            id: repeatText
+
+            Layout.fillWidth: true
+            MouseArea{
+                anchors.fill: parent
+                onClicked: stackView.push(pickTimeView)
+            }
+        }
+        Button{
+            id: deletRepeat
+
+            text: "x"
+            onClicked: {
+                currentToDo.repeatID = 0
+                updateUI()
+            }
+        }
+
+        Text{ //TODO: activate/show when ready
+            id: reminderText
+
+            Layout.bottomMargin: 5
+
+            Layout.fillWidth: true
+            text: qsTr("Repeat: ")
+            MouseArea{
+                anchors.fill: parent
+                onClicked: stackView.push(pickTimeView)
+            }
+        }
+        Button{
+            id: deleteReminder
+
+            Layout.bottomMargin: 5
+
+            text: "x"
+            onClicked: {
+                currentToDo.remindID = 0
+                updateUI()
+            }
+        }
+    } //GridLayout
+}
