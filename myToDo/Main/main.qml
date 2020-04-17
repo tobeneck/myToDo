@@ -27,7 +27,8 @@ ApplicationWindow {
     Component{
         id: toDoListView
         ToDoListView{
-            todoListModel: todoLists.get(currentListIndex).attributes
+            todoListModel: todoLists.get(currentListIndex).todos
+            statusListModel: todoLists.get(currentListIndex).statusList
             title: todoLists.get(currentListIndex).name
             categoryListModel: categorys
         }

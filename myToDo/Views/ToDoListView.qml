@@ -14,8 +14,8 @@ Page {
 
     property var todoListModel
     property var categoryListModel
+    property var statusListModel
     property var currentTag
-    property var currentIndex
 
     function addNewToDo(title){
         var startDate = new Date()
@@ -42,7 +42,7 @@ Page {
                          "title": title,
                          "done": false,
                          "labels": [],
-                         "status": "ToDo", //make it an ID
+                         "status": 0, //0: todo, 1: in progress, 2: waiting, 3: done
 
                          "startDateEnabled": false, //show the date
                          "allDay": false,
@@ -100,14 +100,24 @@ Page {
             todoListModel.get(todoListModel.count - 1).labels.append({"name": labels.get(i).name, "color": labels.get(i).done})
     }
 
-    SortFilterModel{
-
+    ListModel{
+        id: filteredToDos
     }
+
+    function filterByDone(){
+        for(var i = 0; i < todoListModel.count; i++){
+            if(!todoListModel.get(i).done)
+                filteredToDos.append(todoListModel.get(i))
+        }
+    }
+
+    Component.onCompleted: filterByDone()
 
     Component{
         id: editToDoView
         EditToDoView{
-            currentToDo: root.todoListModel.get(currentIndex)
+            currentToDo: root.todoListModel.get(todoListView.currentIndex)
+            statusListModel: root.statusListModel
         }
     }
 
@@ -147,8 +157,6 @@ Page {
                 border.color: "grey"
                 border.width: 2
                 radius: 3
-
-                visible: !done
 
                 MouseArea{
                     anchors.fill: parent
@@ -196,14 +204,26 @@ Page {
 
 
                 Text {
+                    id: todoTitle
                     text: !startDateEnabled ? title : title + "\n" + startDate.toLocaleDateString(Qt.locale("de_DE"))
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.leftMargin: 5
                     anchors.left: doneButton.right
-                    anchors.right: parent.right
+                    anchors.right: statisIndicator.left
                 }
 
-            }
+                Rectangle{
+                    id: statisIndicator
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    width: height
+                    anchors.margins: 5
+                    radius: 90
+                    color: statusListModel.get(status).color
+                }
+
+            }//Rectangle - end of delegate
 
             populate: Transition {
                 NumberAnimation { property: "opacity"; from: 0; to: 1; duration: 1000 }

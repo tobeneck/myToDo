@@ -17,5 +17,6 @@
         <file>Views/EditToDoView/Components/TimeComponent.qml</file>
         <file>Views/EditToDoView/Components/SubToDosComponent.qml</file>
         <file>Views/EditToDoView/Components/NotesComponent.qml</file>
+        <file>Views/EditToDoView/Components/StatusAndLabelComponent.qml</file>
     </qresource>
 </RCC>

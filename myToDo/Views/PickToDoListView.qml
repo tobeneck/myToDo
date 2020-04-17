@@ -1,7 +1,7 @@
 import QtQuick 2.13
 import QtQuick.Controls 2.13
 import QtQuick.Layouts 1.13
-import QtQml.Models 2.1 // for the dekegateModel
+import QtQml.Models 2.13 // for the dekegateModel
 
 import "../MyComponents"
 
@@ -11,9 +11,17 @@ Page {
     property var todoListsModel
 
     function addToList(name, type){
+
             todoListsModel.append({"name": name,
                                   "type": type,
-                                  "attributes": []})
+                                  "todos": [], //the todos
+                                  "statusList": [
+                                          { "name": "ToDo", "color": "red" },
+                                          { "name": "In Progress", "color": "orange" },
+                                          { "name": "Waiting", "color": "yellow" },
+                                          { "name": "Done", "color": "green" }
+                                      ]
+                                  })
         //TODO: if name exists, make it _2
         return;
     }
@@ -110,32 +118,6 @@ Page {
         spacing: 4
         cacheBuffer: 50
     }
-
-//    ListView{
-//        anchors.top: parent.top
-//        anchors.bottom: newToDoListButton.top
-//        anchors.right: parent.right
-//        anchors.left: parent.left
-
-//        spacing: 5
-
-//        delegate: Rectangle{
-//            id: todo
-//            anchors.left: parent.left
-//            anchors.right: parent.right
-//            anchors.margins: 5
-//            height: root.height / 11
-
-//            border.color: "grey"
-//            radius: 3
-
-//            Text{
-//                text: name
-//            }
-//        }
-
-//        model: todoListsModel
-//    }
 
     Button{
         id: newToDoListButton

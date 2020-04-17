@@ -10,6 +10,7 @@ Page {
     title: todoListModel.get(currentIndex).title
 
     property var currentToDo
+    property var statusListModel
 
     ListModel{
         id: repeatListModel
@@ -56,46 +57,6 @@ Page {
         contentWidth: -1
         contentHeight: timeComponent.height + subToDosComponent.height + notesComponent.height + 15 //15=3*anchorMargins
 
-//            //Categorys
-//            RowLayout{
-//                Layout.fillWidth: true
-//                ComboBox {
-//                    Layout.fillWidth: true
-//                    id: categoryBox
-//                    editable: true
-//                    model: categorys
-
-//                    textRole: "text"
-
-//                    onAccepted: {
-//                        if (find(currentText) === -1) {
-//                            categorys.append({text: editText})
-//                            currentIndex = find(editText)
-//                        }
-//                    }
-//                }
-//                Button{
-//                    text: qsTr("Edit Categorys")
-//                    onClicked: print("ToDo: add edit categorys")
-//                }
-//            }
-
-//            //Status
-//            ComboBox {
-//                id: statusBox
-
-//                textRole: "text"
-
-//                editable: true
-//                model: categorys
-//                onAccepted: {
-//                    if (find(currentText) === 0) {
-//                        model.append({text: editText})
-//                        currentIndex = find(editText)
-//                    }
-//                }
-//            }
-
         TimeComponent{
             id: timeComponent
             anchors.top: parent.top
@@ -106,13 +67,28 @@ Page {
 
         }
 
+        StatusAndLabelComponent{
+            id: statusAndLabelComponent
+            anchors.topMargin: 5
+            anchors.top: timeComponent.bottom
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            height: childrenRect.height
+
+            statusList: statusListModel
+            statusID: currentToDo.status
+
+            onCurrentStatusChanged: currentToDo.status = status
+        }
+
         SubToDosComponent{
             id: subToDosComponent
 
-            onHeightChanged: timeComponent.height + subToDosComponent.height + notesComponent.height + 15
+            onHeightChanged: timeComponent.height + subToDosComponent.height + notesComponent.height + 20 + statusAndLabelComponent.height
 
             anchors.topMargin: 5
-            anchors.top: timeComponent.bottom
+            anchors.top: statusAndLabelComponent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
 
